@@ -1,0 +1,96 @@
+###########################
+#View on XY plane
+#LookAt 10 10 10 # eye  [X,Y,Z]
+#       0 0 0  # look at point [X,Y,Z]
+#       0 1 0  # up vector [X,Y,Z]
+############################
+
+
+###########################
+#Isometric view
+LookAt 10 10 10 # eye  [X,Y,Z]
+       0 0 0  # look at point [X,Y,Z]
+       0 1 0  # up vector [X,Y,Z]
+############################
+
+
+###########################
+#PERSPECTIVE CAMERA
+Camera "perspective" "float fov" 45 #FOV=Field Of View
+"float lensradius" 0 # (default value: 0), increase lens radius to achieve a blurry effect, i.e. try: 0.1, 0.5, 1
+"float 	focaldistance" 	10 
+###########################
+
+
+###########################
+#REALISTIC CAMERA
+#Camera "realistic"
+#  "string lensfile" "lenses/fisheye.10mm.dat"
+###########################
+
+
+# FILENAME, sampler, resolution
+Sampler "halton" "integer pixelsamples" 128
+Integrator "path"
+Film "image" "string filename" "GroupProject.png"
+     "integer xresolution" [400] "integer yresolution" [400]
+
+WorldBegin
+
+# uniform blue-ish illumination from all directions
+LightSource "infinite" "rgb L" [.4 .45 .5]
+
+# approximate the sun
+LightSource "distant"  "point from" [ -30 40  100 ]
+   "blackbody L" [3000 1.5]
+
+
+
+#RED SPHERE:
+#AttributeBegin
+#  Material "matte" "rgb Kd" [ 1 0 0 ] #Fully Red
+#  Shape "sphere" "float radius" 1 #sphere in the origin
+#AttributeEnd
+
+#GREEN SPHERE:
+#AttributeBegin
+#  Material "matte" "rgb Kd" [ 0 1 0 ] #Fully Green
+#  TransformBegin	
+#	Translate 1 1 0 #Translation X=1,Y=1,Z=0
+#  	Shape "sphere" "float radius" 1
+#  TransformEnd
+#AttributeEnd
+
+#BLUE SPHERE:
+#AttributeBegin
+#  Material "matte" "rgb Kd" [ 0 0 1 ] #Fully Blue
+#  TransformBegin	
+#	Translate 2 2 0 #Translation X=2,Y=2,Z=0
+#  	Shape "sphere" "float radius" 1
+#  TransformEnd
+#AttributeEnd
+
+
+
+################################
+#FLOOR checkerboard  (XZ plane)#
+################################
+
+AttributeBegin
+  Translate 0 -1 0 #translate checkerboard -1 in y
+  Texture "checks" "spectrum" "checkerboard"
+          "float uscale" [32] "float vscale" [32] #defines a 8 by 8 checkerboard
+          "rgb tex1" [.1 .1 .1] "rgb tex2" [.8 .8 .8] #defines color of squares in checkerboard
+  Material "matte" "texture Kd" "checks"
+
+  Shape "trianglemesh"
+
+  "integer indices" [0 1 3 1 2 3]
+  "point P" [-40 0 -40  -40 0 40   40 0 40   40 0 -40] # defines the 4 extreme points of checkerboard
+  "float st" [ 0 0   1 0    1 1   0 1 ]
+AttributeEnd
+
+
+
+
+WorldEnd
